@@ -32,6 +32,29 @@ Tools supporting PanSN should allow the user to change the delimiter.
 
 The prefixing should provide a unique hierachy of sample names and haplotype identifiers for the entire pangenome under analysis.
 
+## Script to update contig names
+```bash
+from pathlib import Path
+
+def rename_fasta_headers(input_fasta, output_fasta):
+    base_name = Path(input_fasta).stem  # e.g., 'chm13' from 'chm13.fa'
+
+    with open(input_fasta, 'r') as infile, open(output_fasta, 'w') as outfile:
+        for line in infile:
+            if line.startswith('>'):
+                header = line.strip()[1:]  # remove '>'
+                new_header = f">{base_name}#0#{header}"
+                outfile.write(new_header + '\n')
+            else:
+                outfile.write(line)
+
+# === USAGE ===
+input_fasta = "GRCz12tu.fasta"
+output_fasta = "GRCz12tu_renamed.fa"
+rename_fasta_headers(input_fasta, output_fasta)
+
+```
+
 ## deeper motivation
 
 When working with pangenomes it becomes necessary to maintain simple metadata about the origins of each sequence.
